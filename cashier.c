@@ -39,15 +39,21 @@ void cabecalho(const char *titulo){
     linha('=', 35);
 }
 
+void limpar_buffer(){
+    int c;
+    while((c = getchar()) != '\n' && c != EOF);
+}
+
 int ler_valor_centavos(const char *prompt){
     double v;
     int valido = 0;
     do{
         printf("%s", prompt);
         valido = (scanf("%lf", &v) == 1 && v >= 0);
+        limpar_buffer();
         if(!valido){
             printf("    Valor invalido. Tente novamente.\n");
-            while(getchar() != '\n');
+            limpar_buffer();
         }
     } while(!valido);
     return (int)(v * 100.0 + 0.5);
@@ -59,9 +65,10 @@ int ler_inteiro(const char *prompt){
     do{
         printf("%s", prompt);
         valido = (scanf("%d", &v) == 1 && v>= 0);
+        limpar_buffer();
         if(!valido) {
             printf("  Entrada invalida.\n\n");
-            while(getchar() != '\n');   // limpar buffer
+            limpar_buffer();
         }
     } while (!valido);
     return v;
