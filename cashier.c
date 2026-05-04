@@ -53,7 +53,6 @@ int ler_valor_centavos(const char *prompt){
         limpar_buffer();
         if(!valido){
             printf("    Valor invalido. Tente novamente.\n");
-            limpar_buffer();
         }
     } while(!valido);
     return (int)(v * 100.0 + 0.5);
@@ -68,7 +67,6 @@ int ler_inteiro(const char *prompt){
         limpar_buffer();
         if(!valido) {
             printf("  Entrada invalida.\n\n");
-            limpar_buffer();
         }
     } while (!valido);
     return v;
