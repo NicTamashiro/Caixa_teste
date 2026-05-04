@@ -3,6 +3,7 @@
 #include <string.h>
 
 #define NUM_DENOMINACOES 13
+#define LARGURA 45
 
 const int VALORES[NUM_DENOMINACOES] = {
     20000, 10000, 5000, 2000, 1000, 500, 200, 100, 50, 25, 10, 5, 1
@@ -34,9 +35,9 @@ void linha(char c, int n){
 }
 
 void cabecalho(const char *titulo){
-    linha('=', 35);
+    linha('=', LARGURA);
     printf("    %s\n", titulo);
-    linha('=', 35);
+    linha('=', LARGURA);
 }
 
 void limpar_buffer(){
@@ -103,14 +104,14 @@ void ver_caixa(const Caixa *c){
     limpar_tela();
     cabecalho("EXTRATO DO CAIXA");
     printf("\n  %-12s  %-8s  %s\n", "Denominacao", "Qtd", "Subtotal");  
-    linha('-', 55);
+    linha('-', LARGURA);
     for (int i = 0; i < NUM_DENOMINACOES; i++){
         long long sub = (long long)c->quantidade[i] * VALORES[i];
         printf("  %-12s  %-8d  R$ %8.2f\n", NOMES[i], c->quantidade[i], sub / 100.0);
     }
-    linha('-', 55);
+    linha('-', LARGURA);
     printf("  %-22s  R$ %8.2f\n", "TOTAL EM CAIXA:", saldo_centavos(c) / 100.0);
-    linha('=', 55);
+    linha('=', LARGURA);
     aguardar();
 }
 
@@ -168,13 +169,13 @@ void simular_venda(Caixa *c){
     }
 
     printf("\n  Composicao do troco:\n");
-    linha('-', 40);
+    linha('-', LARGURA);
     for(int i = 0; i < NUM_DENOMINACOES; i++){
         if(usados[i] > 0){
             printf("  %s  x %d\n", NOMES[i], usados[i]);
         }
     }
-    linha('-', 40);
+    linha('-', LARGURA);
     printf("\n  Venda e troco processados com sucesso!\n");
     printf("  Caixa atualizado.\n");
     aguardar();
