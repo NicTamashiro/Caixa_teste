@@ -60,6 +60,14 @@ void aguardar(){
     while (getchar() != '\n');  // espera o usuario apertar Enter
 }
 
+long long saldo_centavos(const Caixa *c){
+    long long total = 0;
+    for (int i = 0; i < NUM_DENOMINACOES; i++){
+        total += (long long)c->quantidade[i] * VALORES[i];
+    }
+    return total;
+}
+
 void cadastrar(Caixa *c) {
     limpar_tela();
     cabecalho("CADASTRAR NOTAS E MOEDAS");
@@ -67,9 +75,24 @@ void cadastrar(Caixa *c) {
     for (int i = 0; i < NUM_DENOMINACOES; i++){
         char prompt[64];
         snprintf(prompt, sizeof(prompt), "  %s -> qtd: ", NOMES[i]); // guardar o texto numa variável para passar ele como argumento para a função ler_inteiro()
-        c->quantidade[i] = ler_inteiro(prompt); // salva a quantidade digitada diretamente na caixa original
+        c->quantidade[i] = ler_inteiro(prompt); // salva a quantidade digitada diretamente na caixa original, nao apenas uma copia
     }
     printf("\n  Caixa atualizado com sucesso!\n");
+    aguardar();
+}
+
+void ver_caixa(const Caixa *c){
+    limpar_tela();
+    cabecalho("EXTRATO DO CAIXA");
+    printf("\n  %-12s  %-8s  %s\n", "Denominacao", "Qtd", "Subtotal");  
+    linha('-', 55);
+    for (int i = 0; i < NUM_DENOMINACOES; i++){
+        long long sub = (long long)c->quantidade[i] * VALORES[i];
+        printf("  %-12s  %-8d  R$ %8.2f\n", NOMES[i], c->quantidade[i], sub / 100.0);
+    }
+    linha('-', 55);
+    printf("  %-22  R$ %8.2f\n", "TOTAL EM CAIXA:", saldo_centavos(c) / 100.0);
+    linha('=', 55);
     aguardar();
 }
 
