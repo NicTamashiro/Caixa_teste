@@ -69,7 +69,7 @@ int ler_inteiro(const char *prompt){
 
 void aguardar(){
     printf("\n  Pressione ENTER para continuar...");
-    fflush(stdout);
+    fflush(stdout); //Força o texto aparecer na tela imediatamente. Sem isso, às vezes o printf pode ficar “guardado” e não aparecer na hora.
     int c;
     while ((c = getchar()) != '\n' && c != EOF);  // descarta o \n do scanf
     while ((c = getchar()) != '\n' && c != EOF);  // espera o Enter do usuário
