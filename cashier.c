@@ -40,6 +40,20 @@ void cabecalho(const char *titulo){
     linha('=', 35);
 }
 
+int ler_valor_centavos(const char *prompt){
+    double v;
+    int valido = 0;
+    do{
+        printf("%s", prompt);
+        valido = (scanf("%lf", &v) == 1 && v >= 0);
+        if(!valido){
+            printf("    Valor invalido. Tente novemente.\n");
+            while(getchar() != '\n');
+        }
+    } while(!valido);
+    return (int)(v * 100.0 + 0.5);
+}
+
 int ler_inteiro(const char *prompt){
     int v;
     int valido;
@@ -93,6 +107,74 @@ void ver_caixa(const Caixa *c){
     linha('-', 55);
     printf("  %-22  R$ %8.2f\n", "TOTAL EM CAIXA:", saldo_centavos(c) / 100.0);
     linha('=', 55);
+    aguardar();
+}
+
+int decompor(Caixa *c, int troco_cts, int usados[NUM_DENOMINACOES], int simulacao){
+    int temp[NUM_DENOMINACOES];
+    memcpy(temp, c->quantidade, sizeof(temp));  // copia tudo isso pro array temp
+
+    int restante = troco_cts;
+    menset(usados, 0, NUM_DENOMINACOES * sizeof(int));  // preencher tudo com 0
+
+    for(int i = 0; i < NUM_DENOMINACOES && restante > 0; i++){
+        if (VALORES[i] > restante) continue;
+        int qtd_necessaria = restante / VALORES[i];
+        // Usa o menor valor entre o necessário para o troco e o disponível no caixa
+        int qtd_usar = (qtd_necessaria < temp[i]) ? qtd_necessaria : temp[i];
+        usados[i] = qtd_usar;              // guarda quantas notas/moedas desse valor foram usadas no troco
+        temp[i] -= qtd_usar;              // diminui do estoque temporário a quantidade que foi usada
+        restante -= qtd_usar * VALORES[i]; // reduz do troco o valor já pago com essas notas/moedas
+    }
+
+    if (restante != 0) return 0; // nao conseguiu dar o troco
+
+    if (!simulacao) {
+        memcpy(c->quantidade, temp, sizeof(temp));  //Copia o resultado final para o caixa real
+    }
+
+    return 1;
+}
+
+void simular_venda(Caixa *c){
+    limpar_tela();
+    cabecalho("SIMULAR VENDA E TROCO");
+
+    int compra = ler_valor_centavos("\n  Valor da compra (R$): ");
+    int pago = ler_valor_centavos("  Valor pago pelo cliente (R$): ");
+
+    if(pago < compra){
+        printf("\n  Valor insuficiente! O cliente pagou menos do que o total.\n");
+        aguardar();
+        return;
+    }
+
+    int troco = pago - compra;
+    printf("\n  Troco a devolver: R$ %.2f\n", troco / 100.0);
+
+    if(troco == 0){
+        printf("   Sem troco. Venda concluida.\n");
+        aguardar();
+        return 0;
+    }
+
+    int usados[NUM_DENOMINACOES];
+    if(!decompor(c,troco, usados, 0)){
+        printf("\n  Caixa sem notas/moedas suficientes para o troco.\n");
+        aguardar();
+        return;
+    }
+
+    printf("\n  Composicao do troco:\n");
+    linha('-', 40);
+    for(int i = 0; i < NUM_DENOMINACOES; i++){
+        if(usados[i] > 0){
+            printf("  %s  x %d\n", NOMES[i], usados[i]);
+        }
+    }
+    linha('-', 40);
+    printf("\n  Venda e troco processados com sucesso!\n");
+    printf("  Caixa atualizado.\n");
     aguardar();
 }
 
