@@ -3,7 +3,6 @@
 #include <string.h>
 
 #define NUM_DENOMINACOES 13
-#define FATOR 100
 
 const int VALORES[NUM_DENOMINACOES] = {
     20000, 10000, 5000, 2000, 1000, 500, 200, 100, 50, 25, 10, 5, 1
@@ -70,8 +69,8 @@ int ler_inteiro(const char *prompt){
 
 void aguardar(){
     printf("\n  Pressione ENTER para continuar...");
-    while (getchar() != '\n');  // descarta o \n velho do scanf
-    while (getchar() != '\n');  // espera o usuario apertar Enter
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
 }
 
 long long saldo_centavos(const Caixa *c){
@@ -105,7 +104,7 @@ void ver_caixa(const Caixa *c){
         printf("  %-12s  %-8d  R$ %8.2f\n", NOMES[i], c->quantidade[i], sub / 100.0);
     }
     linha('-', 55);
-    printf("  %-22  R$ %8.2f\n", "TOTAL EM CAIXA:", saldo_centavos(c) / 100.0);
+    printf("  %-22s  R$ %8.2f\n", "TOTAL EM CAIXA:", saldo_centavos(c) / 100.0);
     linha('=', 55);
     aguardar();
 }
@@ -115,7 +114,7 @@ int decompor(Caixa *c, int troco_cts, int usados[NUM_DENOMINACOES], int simulaca
     memcpy(temp, c->quantidade, sizeof(temp));  // copia tudo isso pro array temp
 
     int restante = troco_cts;
-    menset(usados, 0, NUM_DENOMINACOES * sizeof(int));  // preencher tudo com 0
+    memset(usados, 0, NUM_DENOMINACOES * sizeof(int));  // preencher tudo com 0
 
     for(int i = 0; i < NUM_DENOMINACOES && restante > 0; i++){
         if (VALORES[i] > restante) continue;
@@ -155,7 +154,7 @@ void simular_venda(Caixa *c){
     if(troco == 0){
         printf("   Sem troco. Venda concluida.\n");
         aguardar();
-        return 0;
+        return;
     }
 
     int usados[NUM_DENOMINACOES];
