@@ -46,7 +46,7 @@ int ler_valor_centavos(const char *prompt){
         printf("%s", prompt);
         valido = (scanf("%lf", &v) == 1 && v >= 0);
         if(!valido){
-            printf("    Valor invalido. Tente novemente.\n");
+            printf("    Valor invalido. Tente novamente.\n");
             while(getchar() != '\n');
         }
     } while(!valido);
@@ -69,8 +69,10 @@ int ler_inteiro(const char *prompt){
 
 void aguardar(){
     printf("\n  Pressione ENTER para continuar...");
+    fflush(stdout);
     int c;
-    while ((c = getchar()) != '\n' && c != EOF);
+    while ((c = getchar()) != '\n' && c != EOF);  // descarta o \n do scanf
+    while ((c = getchar()) != '\n' && c != EOF);  // espera o Enter do usuário
 }
 
 long long saldo_centavos(const Caixa *c){
