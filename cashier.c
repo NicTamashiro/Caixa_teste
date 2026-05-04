@@ -74,9 +74,8 @@ int ler_inteiro(const char *prompt){
 
 void aguardar(){
     printf("\n  Pressione ENTER para continuar...\n");
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);  // descarta o \n do scanf
-    while ((c = getchar()) != '\n' && c != EOF);  // espera o Enter do usuário
+    fflush(stdout);
+    limpar_buffer();
 }
 
 long long saldo_centavos(const Caixa *c){
@@ -115,7 +114,7 @@ void ver_caixa(const Caixa *c){
     aguardar();
 }
 
-int decompor(Caixa *c, int troco_cts, int usados[NUM_DENOMINACOES], int simulacao){
+int decompor(Caixa *c, int troco_cts, int usados[NUM_DENOMINACOES]){
     int temp[NUM_DENOMINACOES];
     memcpy(temp, c->quantidade, sizeof(temp));  // copia tudo isso pro array temp
 
@@ -134,9 +133,7 @@ int decompor(Caixa *c, int troco_cts, int usados[NUM_DENOMINACOES], int simulaca
 
     if (restante != 0) return 0; // nao conseguiu dar o troco
 
-    if (!simulacao) {
-        memcpy(c->quantidade, temp, sizeof(temp));  //Copia o resultado final para o caixa real
-    }
+    memcpy(c->quantidade, temp, sizeof(temp));  //Copia o resultado final para o caixa real
 
     return 1;
 }
@@ -164,7 +161,7 @@ void simular_venda(Caixa *c){
     }
 
     int usados[NUM_DENOMINACOES];
-    if(!decompor(c,troco, usados, 0)){
+    if(!decompor(c,troco, usados)){
         printf("\n  Caixa sem notas/moedas suficientes para o troco.\n");
         aguardar();
         return;
