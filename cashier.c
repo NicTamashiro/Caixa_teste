@@ -60,6 +60,19 @@ void aguardar(){
     while (getchar() != '\n');  // espera o usuario apertar Enter
 }
 
+void cadastrar(Caixa *c) {
+    limpar_tela();
+    cabecalho("CADASTRAR NOTAS E MOEDAS");
+    printf("\n  Informe a quantidade de cada denominacao:\n\n");
+    for (int i = 0; i < NUM_DENOMINACOES; i++){
+        char prompt[64];
+        snprintf(prompt, sizeof(prompt), "  %s -> qtd: ", NOMES[i]); // guardar o texto numa variável para passar ele como argumento para a função ler_inteiro()
+        c->quantidade[i] = ler_inteiro(prompt); // salva a quantidade digitada diretamente na caixa original
+    }
+    printf("\n  Caixa atualizado com sucesso!\n");
+    aguardar();
+}
+
 int menu(){
     limpar_tela();
     cabecalho("SISTEMA DE GESTAO DE CAIXA");
